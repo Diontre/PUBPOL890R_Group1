@@ -1,6 +1,6 @@
 #Chapter 4 
 
-#Exercise 4.6.1 
+#Exercise 4.6
 
 install.packages("styler")
 library("tidyverse")
@@ -37,17 +37,41 @@ flights |>
 #You will need to perform four operations:
 
 #Extract the number of TB cases per country per year.
-table1 |> 
+table2 |> 
+  group_by(year) |> 
+  summarize(total_cases = sum(cases))
+
+table2 |> 
   group_by(year) |> 
   summarize(total_cases = sum(cases))
 
 #Extract the matching population per country per year.
-table1 |> 
+table2 |> 
   group_by(year) |> 
-  summarize(population, counrty)
+  summarize(population, country)
 
 #Divide cases by population, and multiply by 10000.
-table1 |>
+table2 |>
   mutate(rate = cases / population * 10000)
+
+country <- c("Afghanistan", "Afghanistan", "Afghanistan", "Afghanistan",
+             "Brazil", "Brazil", "Brazil", "Brazil", "China", "China", "China",
+             "China")
+year <- c(1999, 1999, 2000, 2000, 1999, 1999, 2000, 2000, 1999, 1999, 2000, 2000)
+type <- c("cases", "population", "cases", "population", "cases", "population",
+          "cases", "population", "cases", "population", "cases", "population")
+count <- c(745, 19987071, 2666, 20595360, 37737, 172006362, 80488, 174504898,
+           212258, 1272915272, 213766, 1280428583)
+
+table2_combine <-
+  reshape(table2_before,
+          idvar = c("country", "year"),
+          timevar = "type",
+          direction = "wide")
+
+table2_cases <-
+  table2_combine |> 
+  mutate(table2_combine,
+         cases_per_10k = count.cases / count.population * 10000)
 
 #Store back in the appropriate place.
