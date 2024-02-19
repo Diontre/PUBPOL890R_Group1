@@ -1,0 +1,53 @@
+#Chapter 4 
+
+#Exercise 4.6.1 
+
+install.packages("styler")
+library("tidyverse")
+library("nycflights13")
+
+#1.
+
+flights |>
+  filter(dest == "IAH") |>
+  group_by(year, month, day) |> 
+  summarize(n=n(),
+  delay = mean(arr_delay, na.rm = TRUE)) |> 
+  filter(n>10)
+
+flights |> 
+  filter(carrier == "UA", dest%in%c("IAH", "HOU"), sched_dep_time > 
+           0900, sched_arr_time < 2000) |> 
+  group_by(flight) |> 
+  summarize(
+    delay = mean(arr_delay, na.rm = TRUE), 
+    cancelled = sum(is.na(arr_delay)), n=n()) |>
+  filter(n>10)
+
+
+#Exercise 5.2.1
+
+#1. Each observation I am observing the rate of Tuberculosis growing in each
+#year. Each column represents the 
+#locations that are being observed(population), the time period that is being
+#measured(year), the number of cases happening within the year, and the size of
+#the scale of the people impacted(population).
+
+#2.Sketch out the process you’d use to calculate the rate for table2 and table3. 
+#You will need to perform four operations:
+
+#Extract the number of TB cases per country per year.
+table1 |> 
+  group_by(year) |> 
+  summarize(total_cases = sum(cases))
+
+#Extract the matching population per country per year.
+table1 |> 
+  group_by(year) |> 
+  summarize(population, counrty)
+
+#Divide cases by population, and multiply by 10000.
+table1 |>
+  mutate(rate = cases / population * 10000)
+
+#Store back in the appropriate place.
